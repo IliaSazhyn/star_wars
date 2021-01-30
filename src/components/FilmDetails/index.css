@@ -1,0 +1,16 @@
+.Details_wrapper {
+    padding: 2rem;
+}
+
+.Details_card_container {
+    display: flex;
+    justify-content: center;
+}
+
+.Details_card_body {
+    width: 80vw;
+}
+
+.Details_button {
+    margin-bottom: 2rem;
+}

@@ -1,89 +1,49 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Card,
-  ListGroup,
-  ListGroupItem,
-} from "react-bootstrap";
+import "./index.css";
+import { Container, Row, Col, Button, Card, Accordion, ListGroup, ListGroupItem, Spinner } from "react-bootstrap";
 
 const FilmDetails = () => {
   const [details, setDetails] = useState([]);
-  const [film, setFilm] = useState([]);
-  const [vehicle, setVehicle] = useState([]);
+
+  const [vehicles, setVehicles] = useState([]);
+  const [starships, setStarships] = useState([]);
+  const [characters, setCharacters] = useState([]);
+  const [planets, setPlanets] = useState([]);
+  const [species, setSpecies] = useState([]);
+
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(null);
-  const location = useLocation();
   const history = useHistory();
 
   const fetchData = async () => {
     setLoading(true);
-    const movieId = location.pathname;
+    const movieId = await JSON.parse(localStorage.getItem("url"));
 
-    let characterNames = [];
-    let planetsNames = [];
-    let speciesNames = [];
-    let starshipsNames = [];
-    let vehiclesNames = [];
-
-    const movie = await axios.get(`https://swapi.dev/api${movieId}`);
+    const movie = await axios.get(`${movieId}`);
     const { data } = movie;
 
     // This set all details in state
 
     // This is character action
     const charactersLinks = [...data.characters];
-    const charactersData = await charactersLinks.map((link) => axios.get(link));
-    axios.all(charactersData).then((value) =>
-      value.forEach((val) => {
-        characterNames.push(val.data.name);
-      })
-    );
-    // This is planets action
+    fetchCharacters(charactersLinks);
+// This is planet action
     const planetsLinks = [...data.planets];
-    const planetsData = await planetsLinks.map((link) => axios.get(link));
-    axios.all(planetsData).then((value) =>
-      value.forEach((val) => {
-        // let temp = val.data.name.slice();
-        planetsNames.push(val.data.name);
-      })
-    );
+    fetchPlanets(planetsLinks);
     // This is species action
     const speciesLinks = [...data.species];
-    const speciesData = await speciesLinks.map((link) => axios.get(link));
-    axios.all(speciesData).then((value) =>
-      value.forEach((val) => {
-        speciesNames.push(val.data.name);
-      })
-    );
+    fetchSpecies(speciesLinks);
+
     // This is starship action
     const starshipsLinks = [...data.starships];
-    const starshipsData = await starshipsLinks.map((link) => axios.get(link));
-    axios.all(starshipsData).then((value) =>
-      value.forEach((val) => {
-        starshipsNames.push(val.data.name);
-      })
-    );
+    fetchStarships(starshipsLinks);
+
     // This is vehicles action
     const vehiclesLinks = [...data.vehicles];
-    const vehiclesData = await vehiclesLinks.map((link) => axios.get(link));
-    axios.all(vehiclesData).then((value) =>
-      value.forEach((val) => {
-        vehiclesNames.push(val.data.name);
-      })
-    );
-    setFilm({
-      speciesNames,
-      vehiclesNames,
-      starshipsNames,
-      characterNames,
-      planetsNames,
-    });
-    setVehicle(vehiclesNames);
+    fetchVehicles(vehiclesLinks);
+
     setDetails(data);
   };
   useEffect(() => {
@@ -96,38 +56,55 @@ const FilmDetails = () => {
         setError(e.message);
       });
   }, []);
-  // console.log(film["characterNames"]);
 
-  // console.log(film);
-
-  //  if(!isLoading) {
-  //   character.map((movie, index) => (
-  //   console.log(movie.episode_id)
-  // ))
-  // }
-  if (!isLoading) {
-
-    Object.values(film).map((value) =>
-      value.forEach(function (val) {
-        console.log(val)
-      })
-    );
+  function fetchCharacters(charactersLinks) {
+    Promise.all(charactersLinks.map((url) => fetch(url)))
+      .then((responses) => Promise.all(responses.map((res) => res.text())))
+      .then((texts) => {
+        setCharacters(texts.map(JSON.parse));
+      });
   }
+  function fetchVehicles(vehiclesLinks) {
+    Promise.all(vehiclesLinks.map((url) => fetch(url)))
+      .then((responses) => Promise.all(responses.map((res) => res.text())))
+      .then((texts) => {
+        setVehicles(texts.map(JSON.parse));
+      });
+  }
+  function fetchPlanets(planetsLinks) {
+    Promise.all(planetsLinks.map((url) => fetch(url)))
+      .then((responses) => Promise.all(responses.map((res) => res.text())))
+      .then((texts) => {
+        setPlanets(texts.map(JSON.parse));
+      });
+  }
+  function fetchSpecies(speciesLinks) {
+    Promise.all(speciesLinks.map((url) => fetch(url)))
+      .then((responses) => Promise.all(responses.map((res) => res.text())))
+      .then((texts) => {
+        setSpecies(texts.map(JSON.parse));
+      });
+  }
+  function fetchStarships(starshipsLinks) {
+    Promise.all(starshipsLinks.map((url) => fetch(url)))
+      .then((responses) => Promise.all(responses.map((res) => res.text())))
+      .then((texts) => {
+        setStarships(texts.map(JSON.parse));
+      });
+  }
+
   return (
     <Container fluid>
-      <Row>
+      <Row className="Details_wrapper">
         <Col>
-          <div>
+          <div className="Details_card_container">
             {isLoading ? (
-              <div>Loading...</div>
+              <Spinner animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
             ) : (
-              <div>
-                {Object.values(film).map((value) =>
-                  value.forEach(function (val) {
-                    <p>{val}</p>;
-                  })
-                )}
-                <Button color="primary" onClick={() => history.goBack()}>
+              <div className="Details_card_body">
+                <Button className="Details_button" color="primary" onClick={() => history.goBack()}>
                   Back
                 </Button>
 
@@ -137,23 +114,122 @@ const FilmDetails = () => {
                     <Card.Text>Producer: {details.producer}</Card.Text>
                     <Card.Text>Director: {details.director}</Card.Text>
                   </Card.Body>
-                  <ListGroup className="list-group-flush">
-                    <ListGroupItem>Cras justo odio</ListGroupItem>
-                    <ListGroupItem>Dapibus ac facilisis in</ListGroupItem>
-                    <ListGroupItem>Vestibulum at eros</ListGroupItem>
-                  </ListGroup>
+
+                  <Accordion defaultActiveKey="0">
+                    <Card>
+                      <Card.Header>
+                        <Accordion.Toggle
+                          as={Button}
+                          variant="link"
+                          eventKey="1"
+                        >
+                          Characters:
+                        </Accordion.Toggle>
+                      </Card.Header>
+                      <Accordion.Collapse eventKey="1">
+                      <ListGroup>
+                          {characters &&
+                            characters.map((person, id) => (
+                              <ListGroupItem key={id}>{person.name}</ListGroupItem>
+                            ))}
+                        </ListGroup>
+                      </Accordion.Collapse>
+                    </Card>
+                  </Accordion>
+
+                  <Accordion defaultActiveKey="0">
+                    <Card>
+                      <Card.Header>
+                        <Accordion.Toggle
+                          as={Button}
+                          variant="link"
+                          eventKey="2"
+                        >
+                          Planets:
+                        </Accordion.Toggle>
+                      </Card.Header>
+                      <Accordion.Collapse eventKey="2">
+                        <ListGroup>
+                          {planets &&
+                            planets.map((item, id) => (
+                              <ListGroupItem key={id}>{item.name}</ListGroupItem>
+                            ))}
+                        </ListGroup>
+                      </Accordion.Collapse>
+                    </Card>
+                  </Accordion>
+
+                  <Accordion defaultActiveKey="0">
+                    <Card>
+                      <Card.Header>
+                        <Accordion.Toggle
+                          as={Button}
+                          variant="link"
+                          eventKey="3"
+                        >
+                          Vehicles:
+                        </Accordion.Toggle>
+                      </Card.Header>
+                      <Accordion.Collapse eventKey="3">
+                        <ListGroup>
+                          {vehicles &&
+                            vehicles.map((item, id) => (
+                              <ListGroupItem key={id}>{item.name}</ListGroupItem>
+                            ))}
+                        </ListGroup>
+                      </Accordion.Collapse>
+                    </Card>
+                  </Accordion>
+
+                  <Accordion defaultActiveKey="0">
+                    <Card>
+                      <Card.Header>
+                        <Accordion.Toggle
+                          as={Button}
+                          variant="link"
+                          eventKey="4"
+                        >
+                          Starships:
+                        </Accordion.Toggle>
+                      </Card.Header>
+                      <Accordion.Collapse eventKey="4">
+                        <ListGroup>
+                          {starships &&
+                            starships.map((item, id) => (
+                              <ListGroupItem key={id}>{item.name}</ListGroupItem>
+                            ))}
+                        </ListGroup>
+                      </Accordion.Collapse>
+                    </Card>
+                  </Accordion>
+
+                  <Accordion defaultActiveKey="0">
+                    <Card>
+                      <Card.Header>
+                        <Accordion.Toggle
+                          as={Button}
+                          variant="link"
+                          eventKey="5"
+                        >
+                          Species:
+                        </Accordion.Toggle>
+                      </Card.Header>
+                      <Accordion.Collapse eventKey="5">
+                        <ListGroup>
+                          {species &&
+                            species.map((item, id) => (
+                              <ListGroupItem key={id}>{item.name}</ListGroupItem>
+                            ))}
+                        </ListGroup>
+                      </Accordion.Collapse>
+                    </Card>
+                  </Accordion>
+
                 </Card>
               </div>
             )}
-            {/* { Object.values(film).map((value, index) => (
-                <div key={index}>{value}</div>
-              )) } */}
 
             {isError && <div>Somethin went wrong{isError}</div>}
-
-            {/* {film && film["characterNames"].map ((person, id) => (
-    <p key={id}>{person}</p>
-  ))}    */}
           </div>
         </Col>
       </Row>
