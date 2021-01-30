@@ -30,14 +30,16 @@ const FilmDetails = () => {
   const fetchData = async () => {
     setLoading(true);
     const movieId = await JSON.parse(localStorage.getItem("url"));
+    let replaceUrl = movieId.replace('http','https');
 
-    const movie = await axios.get(`${movieId}`);
+    const movie = await axios.get(`${replaceUrl}`);
     const { data } = movie;
 
     // This set all details in state
 
     // This is character action
     const charactersLinks = [...data.characters];
+
     fetchCharacters(charactersLinks);
     // This is planet action
     const planetsLinks = [...data.planets];
@@ -57,18 +59,22 @@ const FilmDetails = () => {
     setDetails(data);
   };
   useEffect(() => {
+    let isSubscribed = true;
     // This fetch data from API
-    fetchData()
+      isSubscribed && 
+      fetchData()
+
       .then(() => {
         setLoading(false);
       })
       .catch((e) => {
         setError(e.message);
       });
+      return () => (isSubscribed = false)
   }, []);
 
-  function fetchCharacters(charactersLinks) {
-    Promise.all(charactersLinks.map((url) => fetch(url)))
+  function fetchCharacters(charactersLinks)  {
+  Promise.all(charactersLinks.map((url) => fetch(url)))
       .then((responses) => Promise.all(responses.map((res) => res.text())))
       .then((texts) => {
         setCharacters(texts.map(JSON.parse));
