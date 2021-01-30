@@ -1,0 +1,13 @@
+.Main_wrapper {
+    padding: 2rem;
+}
+
+.Main_search {
+    width: 50rem;
+    max-width: 50rem;
+}
+
+.Main_search_wrapper{
+    display: flex;
+    justify-content: center;
+}

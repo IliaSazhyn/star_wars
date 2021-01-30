@@ -1,0 +1,16 @@
+
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(94, 87, 87);
+  color:  rgb(94, 87, 87);
+
+  font-family: 'Roboto Mono', monospace;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
