@@ -2,12 +2,25 @@
     padding: 2rem;
 }
 
+.Main_wrapper p {
+    color: #fff;
+}
+
 .Main_search {
     width: 50rem;
     max-width: 50rem;
 }
 
-.Main_search_wrapper{
+.Main_search_wrapper {
     display: flex;
     justify-content: center;
+}
+
+.Main_header {
+    margin: 1rem 0;
+}
+
+.Main_header:hover {
+    cursor: pointer;
+    color: #000;
 }
