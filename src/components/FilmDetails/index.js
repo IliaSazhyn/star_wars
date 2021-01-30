@@ -2,7 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import "./index.css";
-import { Container, Row, Col, Button, Card, Accordion, ListGroup, ListGroupItem, Spinner } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Card,
+  Accordion,
+  ListGroup,
+  ListGroupItem,
+  Spinner,
+} from "react-bootstrap";
 
 const FilmDetails = () => {
   const [details, setDetails] = useState([]);
@@ -29,7 +39,7 @@ const FilmDetails = () => {
     // This is character action
     const charactersLinks = [...data.characters];
     fetchCharacters(charactersLinks);
-// This is planet action
+    // This is planet action
     const planetsLinks = [...data.planets];
     fetchPlanets(planetsLinks);
     // This is species action
@@ -100,11 +110,15 @@ const FilmDetails = () => {
           <div className="Details_card_container">
             {isLoading ? (
               <Spinner animation="border" role="status">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
+                <span className="sr-only">Loading...</span>
+              </Spinner>
             ) : (
               <div className="Details_card_body">
-                <Button className="Details_button" color="primary" onClick={() => history.goBack()}>
+                <Button
+                  className="Details_button"
+                  color="primary"
+                  onClick={() => history.goBack()}
+                >
                   Back
                 </Button>
 
@@ -127,10 +141,12 @@ const FilmDetails = () => {
                         </Accordion.Toggle>
                       </Card.Header>
                       <Accordion.Collapse eventKey="1">
-                      <ListGroup>
+                        <ListGroup>
                           {characters &&
                             characters.map((person, id) => (
-                              <ListGroupItem key={id}>{person.name}</ListGroupItem>
+                              <ListGroupItem key={id}>
+                                {person.name}
+                              </ListGroupItem>
                             ))}
                         </ListGroup>
                       </Accordion.Collapse>
@@ -152,7 +168,9 @@ const FilmDetails = () => {
                         <ListGroup>
                           {planets &&
                             planets.map((item, id) => (
-                              <ListGroupItem key={id}>{item.name}</ListGroupItem>
+                              <ListGroupItem key={id}>
+                                {item.name}
+                              </ListGroupItem>
                             ))}
                         </ListGroup>
                       </Accordion.Collapse>
@@ -174,7 +192,9 @@ const FilmDetails = () => {
                         <ListGroup>
                           {vehicles &&
                             vehicles.map((item, id) => (
-                              <ListGroupItem key={id}>{item.name}</ListGroupItem>
+                              <ListGroupItem key={id}>
+                                {item.name}
+                              </ListGroupItem>
                             ))}
                         </ListGroup>
                       </Accordion.Collapse>
@@ -196,7 +216,9 @@ const FilmDetails = () => {
                         <ListGroup>
                           {starships &&
                             starships.map((item, id) => (
-                              <ListGroupItem key={id}>{item.name}</ListGroupItem>
+                              <ListGroupItem key={id}>
+                                {item.name}
+                              </ListGroupItem>
                             ))}
                         </ListGroup>
                       </Accordion.Collapse>
@@ -218,13 +240,14 @@ const FilmDetails = () => {
                         <ListGroup>
                           {species &&
                             species.map((item, id) => (
-                              <ListGroupItem key={id}>{item.name}</ListGroupItem>
+                              <ListGroupItem key={id}>
+                                {item.name}
+                              </ListGroupItem>
                             ))}
                         </ListGroup>
                       </Accordion.Collapse>
                     </Card>
                   </Accordion>
-
                 </Card>
               </div>
             )}

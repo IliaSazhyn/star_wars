@@ -36,7 +36,11 @@ const Main = () => {
   };
 
   useEffect(() => {
-    getMovies();
+    let isSubscribed = true;
+    if (isSubscribed) {
+      getMovies();
+    }
+    return () => (isSubscribed = false);
   }, []);
 
   const filteredItems = movies.filter((item) =>
@@ -44,8 +48,6 @@ const Main = () => {
   );
 
   const itemsShow = filterText ? filteredItems : movies;
-
-  console.log(movies);
 
   const onClickHandler = (url, id) => {
     localStorage.setItem("url", JSON.stringify(url));
@@ -74,19 +76,20 @@ const Main = () => {
           </InputGroup>
         </Row>
         <Row>
-        {itemsShow.map((movie, index) => (
-
-          <Col   md="6" key={index}>
-            <ListGroupItem action
-              onClick={() => {
-                onClickHandler(movie.url, movie.episode_id);
-              }}
-            >
-              <h3>{movie.title}</h3>
-            </ListGroupItem>
-            <p>{movie.opening_crawl}</p>
-          </Col>
-        ))}
+          {itemsShow.map((movie, index) => (
+            <Col md="6" key={index}>
+              <ListGroupItem
+                className="Main_header"
+                action
+                onClick={() => {
+                  onClickHandler(movie.url, movie.episode_id);
+                }}
+              >
+                <h3>{movie.title}</h3>
+              </ListGroupItem>
+              <p>{movie.opening_crawl}</p>
+            </Col>
+          ))}
         </Row>
       </Col>
     </Container>
