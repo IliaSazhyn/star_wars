@@ -17,6 +17,7 @@ const Main = () => {
   const [loading, setLoading] = useState(false);
   const [filterText, setFilterText] = useState("");
   const history = useHistory();
+  
   const getMovies = async () => {
     setLoading(true);
 
